@@ -1,5 +1,15 @@
 # weather-curve
 
+## 2.1.0
+
+### Minor Changes
+
+- [#1](https://github.com/AstroCaleb/weathercurve.com/pull/1) [`be20f70`](https://github.com/AstroCaleb/weathercurve.com/commit/be20f7069f8c1ce0b6ef8a9f97b077ce18031d33) Thanks [@AstroCaleb](https://github.com/AstroCaleb)! - Moving Weather Curve to a public repository.
+
+### Patch Changes
+
+- [#2](https://github.com/AstroCaleb/weathercurve.com/pull/2) [`e1ec30d`](https://github.com/AstroCaleb/weathercurve.com/commit/e1ec30dfb94612b14ea59778367b6c8a698629c1) Thanks [@AstroCaleb](https://github.com/AstroCaleb)! - Fixing repo name is changeset config
+
 ## 2.0.2
 
 ### Patch Changes
