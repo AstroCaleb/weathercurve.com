@@ -1,0 +1,179 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'package.json'
+      - 'CHANGELOG.md'
+      - '.changelogs'
+      - '!**/*.test.*'
+      - '!**/*.spec.*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release (leave empty to use package.json version)'
+        required: false
+
+permissions:
+  contents: write
+  pull-requests: write
+  deployments: write
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    # Only run if this is a release commit or manual trigger
+    if: |
+      (github.event_name == 'push' &&
+       (contains(github.event.head_commit.message, 'chore(release)') ||
+        contains(github.event.head_commit.message, 'chore(release-pr)'))) ||
+      github.event_name == 'workflow_dispatch'
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      tag: ${{ steps.version.outputs.tag }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # 4.2.2
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node 22
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # 4.4.0
+        with:
+          node-version: "22.19.0"
+
+      - name: Get latest yarn
+        run: |
+          corepack enable
+          yarn set version berry
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Build project
+        run: yarn build
+
+      - name: Verify GitHub CLI
+        run: gh --version
+
+      - name: Determine version and create tag
+        id: version
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -e  # Exit on error
+
+          # Use provided version or get from package.json
+          if [ -n "${{ github.event.inputs.version }}" ]; then
+            VERSION="${{ github.event.inputs.version }}"
+            echo "Using provided version: $VERSION"
+          else
+            VERSION=$(node -p "require('./package.json').version")
+            echo "Using package.json version: $VERSION"
+          fi
+
+          # Clean up version string
+          VERSION=$(echo "$VERSION" | tr -d '[:space:]')
+
+          # Ensure version has 'v' prefix for tag
+          if [[ ! "$VERSION" =~ ^v ]]; then
+            VERSION="v$VERSION"
+            echo "Normalized version to: $VERSION"
+          fi
+
+          TAG="$VERSION"
+          echo "version=${VERSION#v}" >> $GITHUB_OUTPUT  # Store without 'v' prefix
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+
+          # Configure git
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git config --global --add safe.directory /github/workspace
+
+          # Create and push the tag if it doesn't exist
+          if ! git rev-parse -q --verify "refs/tags/$TAG" >/dev/null; then
+            echo "Creating and pushing tag: $TAG"
+            git tag -a "$TAG" -m "Release $TAG"
+            git push origin "$TAG"
+            echo "::notice::Created and pushed tag: $TAG"
+          else
+            echo "::warning::Tag $TAG already exists"
+          fi
+
+      - name: Create GitHub Release
+        id: create_release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -e
+
+          # Get the version and tag from outputs
+          VERSION="${{ steps.version.outputs.version }}"
+          TAG="${{ steps.version.outputs.tag }}"
+
+          echo "Creating release for version: $VERSION (tag: $TAG)"
+
+          # Create release notes using the versioned file from .changelogs
+          RELEASE_NOTES_FILE=".changelogs/v${VERSION}.md"
+          RELEASE_NOTES_PATH="./release-notes.md"
+
+          # Create release notes
+          {
+            echo "## What's Changed"
+            echo ""
+
+            if [ -f "$RELEASE_NOTES_FILE" ]; then
+              echo "Using release notes from $RELEASE_NOTES_FILE"
+              cat "$RELEASE_NOTES_FILE"
+            else
+              echo "* No detailed release notes available for this version."
+            fi
+            echo ""
+          } > "$RELEASE_NOTES_PATH"
+
+          # Debug: Show release notes
+          echo "--- Release Notes ---"
+          cat "$RELEASE_NOTES_PATH"
+          echo "-------------------"
+
+          # Create the GitHub release
+          echo "Creating GitHub release for $TAG..."
+          gh release create "$TAG" \
+            --title "Release $TAG" \
+            --notes-file "$RELEASE_NOTES_PATH" \
+            --latest \
+            --verify-tag
+
+          # Package and upload artifacts if dist directory exists
+          if [ -d "./dist" ]; then
+            echo "Packaging dist directory..."
+            ARTIFACT_NAME="dist-${{ steps.version.outputs.version }}.zip"
+            cd dist && zip -r "../$ARTIFACT_NAME" . && cd -
+
+            echo "Uploading artifact: $ARTIFACT_NAME"
+            gh release upload "$TAG" "$ARTIFACT_NAME" --clobber
+
+            # Add a summary of the release
+            echo "## Release $TAG" >> $GITHUB_STEP_SUMMARY
+            echo "- Version: $VERSION" >> $GITHUB_STEP_SUMMARY
+            echo "- Tag: $TAG" >> $GITHUB_STEP_SUMMARY
+            echo "- [View Release](https://github.com/${{ github.repository }}/releases/tag/$TAG)" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "**Note:** Production deployment requires manual approval. Go to Actions > Production Deploy to deploy this release." >> $GITHUB_STEP_SUMMARY
+          else
+            echo "::warning::No dist directory found. Skipping artifact upload."
+          fi
+
+  # NOTE: Production deployment is NOT automatically triggered.
+  # To deploy to production, manually run the "Production Deploy" workflow
+  # from the Actions tab after verifying the release is successful.

@@ -1,0 +1,502 @@
+/* Hero section */
+.hero {
+  text-align: center;
+  padding: 10px 0 20px;
+}
+
+.hero-date {
+  font-size: 0.85rem;
+  font-weight: 400;
+  margin: 0 0 8px;
+  opacity: 0.8;
+}
+
+.hero-main {
+  align-items: center;
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+
+.hero-temp {
+  font-size: 5rem;
+  font-weight: 200;
+  letter-spacing: -2px;
+  line-height: 1;
+  position: relative;
+}
+
+.hero-temp .degree {
+  font-size: 2.5rem;
+  font-weight: 200;
+  position: absolute;
+  top: 4px;
+}
+
+.hero-summary {
+  font-size: 1rem;
+  font-weight: 300;
+  margin: 0;
+  opacity: 0.8;
+}
+
+/* Hero meta row */
+.hero-meta {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin: 8px 0 0;
+}
+
+.hero-meta .hero-time {
+  font-size: 0.8rem;
+  font-weight: 300;
+}
+
+.hero-meta .hero-time span {
+  font-weight: 200;
+}
+
+.meta-sep {
+  opacity: 0.6;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+.hero-meta .high-low {
+  align-items: center;
+  display: inline-flex;
+  font-size: 0.8rem;
+  font-weight: 500;
+  gap: 1px;
+}
+
+.hero-meta .arrow-up {
+  color: #ffa0a0;
+}
+
+.hero-meta .arrow-down {
+  color: #8ab4ff;
+}
+
+.temp-format .toggle-switch > span span {
+  font-style: normal;
+  top: 0;
+}
+
+.temp-format .toggle-switch input:checked ~ span {
+  box-shadow: none;
+}
+
+/* Day summary */
+.day-summary {
+  align-items: center;
+  display: flex;
+  font-size: 0.85rem;
+  font-weight: 300;
+  justify-content: center;
+  margin: 0 0 12px;
+  min-height: 55px;
+  opacity: 0.85;
+  padding: 14px 20px;
+  text-align: center;
+}
+
+.day-summary .summary-label {
+  font-weight: 500;
+  margin-right: 6px;
+  opacity: 0.6;
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  letter-spacing: 1px;
+}
+
+/* Stat selector */
+.stat-selector {
+  margin-bottom: 10px;
+  position: relative;
+}
+
+.stat-menu-backdrop {
+  bottom: 0;
+  left: 0;
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 49;
+}
+
+/* Active stat card */
+.active-stat-card {
+  align-items: center;
+  background: rgba(80, 140, 255, 0.12);
+  border-color: rgba(100, 160, 255, 0.3);
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  padding: 16px 20px;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.active-stat-card:hover {
+  background: rgba(80, 140, 255, 0.18);
+}
+
+.active-stat-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.active-stat-label {
+  color: rgba(138, 180, 255, 0.8);
+  font-size: 0.65rem;
+  font-weight: 400;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.active-stat-value {
+  color: #8ab4ff;
+  font-size: 1.75rem;
+  font-weight: 300;
+  letter-spacing: -0.5px;
+}
+
+.stat-chevron {
+  color: rgba(138, 180, 255, 0.6);
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.stat-chevron.open {
+  transform: rotate(180deg);
+}
+
+/* Stat selection dropdown menu */
+@keyframes menuSlideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.stat-menu {
+  animation: menuSlideDown 0.15s ease;
+  background: rgba(16, 20, 38, 0.96);
+  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px;
+  z-index: 50;
+}
+
+.stat-menu-item {
+  align-items: center;
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  gap: 10px;
+  padding: 10px 14px;
+  transition: background 0.15s ease;
+}
+
+.stat-menu-item:hover {
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.stat-menu-item.active {
+  background: rgba(80, 140, 255, 0.15);
+}
+
+.stat-menu-label {
+  flex: 1;
+  font-size: 0.85rem;
+  font-weight: 300;
+}
+
+.stat-menu-item.active .stat-menu-label {
+  color: #8ab4ff;
+  font-weight: 400;
+}
+
+.stat-menu-value {
+  font-size: 0.85rem;
+  font-weight: 400;
+  opacity: 0.6;
+}
+
+.stat-menu-item.active .stat-menu-value {
+  color: #8ab4ff;
+  opacity: 1;
+}
+
+.stat-menu-check {
+  color: #8ab4ff;
+  flex-shrink: 0;
+}
+
+/* Text-only stats grid */
+.stats-text-grid {
+  display: grid;
+  gap: 10px 8px;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.stats-text-item {
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 6px 6px;
+  transition: background 0.15s ease;
+}
+
+.stats-text-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.stats-text-label {
+  font-size: 0.6rem;
+  font-weight: 400;
+  letter-spacing: 0.5px;
+  opacity: 0.4;
+  text-transform: uppercase;
+}
+
+.stats-text-value {
+  font-size: 0.95rem;
+  font-weight: 300;
+}
+
+/* Hourly chart area */
+.hourly-weather-wrapper {
+  display: inline-block;
+  height: 100px;
+  margin-top: 8px;
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+  z-index: 1;
+}
+
+.hourly-chart-wrapper {
+  height: 100%;
+  margin: 0;
+  overflow-x: scroll;
+  padding: 0;
+  position: relative;
+  width: 100%;
+  scrollbar-width: none;
+}
+
+.hourly-chart-wrapper::-webkit-scrollbar {
+  display: none;
+}
+
+#hour-indicator-line {
+  background: rgba(100, 160, 255, 0.6);
+  border-radius: 10px;
+  height: calc(100% - 20px);
+  left: calc(50% - 1px);
+  position: absolute;
+  top: 0;
+  width: 1px;
+  z-index: 10;
+  pointer-events: none;
+}
+
+/* Charts stack */
+.hourly-charts-content {
+  position: relative;
+  width: 1600px;
+  height: 100%;
+  margin-left: 50%;
+  padding-right: 50%;
+}
+
+.charts-stack {
+  position: relative;
+  height: calc(100% - 20px);
+}
+
+.chart-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.temperature-layer {
+  z-index: 2;
+}
+
+.stat-layer {
+  z-index: 1;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Chart labels */
+.labels {
+  bottom: -6px;
+  display: flex;
+  height: 6px;
+  justify-content: space-evenly;
+  line-height: 0;
+  white-space: nowrap;
+  width: 100%;
+  z-index: 8;
+}
+
+.labels .label {
+  border-left: 1px solid rgba(255, 255, 255, 0.08);
+  box-sizing: border-box;
+  display: inline-block;
+  height: 100%;
+  position: relative;
+}
+
+.labels .label .text {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 12px;
+  opacity: 0.9;
+  position: absolute;
+  right: -25px;
+  text-align: center;
+  top: 12px;
+  width: 50px;
+}
+
+.labels .label .text > span {
+  margin: 0 1px;
+}
+
+.labels .label .unit {
+  font-size: 10px;
+  opacity: 0.5;
+}
+
+/* Hourly labels */
+.hourly-labels.labels {
+  justify-content: space-between;
+  bottom: 0;
+  height: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.hourly-labels.labels .label {
+  border: none;
+  height: 0;
+}
+
+.hourly-labels.labels .label .text {
+  font-size: 16px;
+  height: 0;
+  overflow: hidden;
+  top: 16px;
+  visibility: hidden;
+}
+
+.hourly-labels.labels .label.midnight::after {
+  background: rgba(255, 255, 255, 0.1);
+  bottom: 0;
+  content: '';
+  height: 60px;
+  position: absolute;
+  width: 1px;
+}
+
+.hourly-labels.labels .label.midnight .day {
+  display: block;
+  font-size: 0.65rem;
+  left: -50px;
+  letter-spacing: 1px;
+  opacity: 0.5;
+  position: absolute;
+  text-align: center;
+  text-transform: uppercase;
+  top: -70px;
+  width: 100px;
+}
+
+/* Next hour precipitation chart */
+.next-hour-chart {
+  margin: 10px auto 4px;
+  max-width: 200px;
+  opacity: 0.2;
+  text-align: center;
+  transition: opacity 0.4s ease;
+}
+
+.next-hour-chart.visible {
+  opacity: 1;
+}
+
+.next-hour-label {
+  display: block;
+  font-size: 0.6rem;
+  font-weight: 400;
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+  opacity: 0.6;
+  text-transform: uppercase;
+}
+
+.next-hour-graph {
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 6px;
+  height: 50px;
+  overflow: hidden;
+}
+
+/* Now pill */
+.now-pill {
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 25px;
+  color: rgba(255, 255, 255, 0.9);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.7rem;
+  font-weight: 400;
+  left: 6px;
+  letter-spacing: 0.5px;
+  opacity: 0;
+  padding: 10px 24px;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%) translateX(-8px);
+  transition: all 0.3s ease;
+  visibility: hidden;
+  z-index: 12;
+}
+
+.now-pill.visible {
+  opacity: 1;
+  transform: translateY(-50%) translateX(0);
+  visibility: visible;
+}
+
+.now-pill:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Recharts overrides */
+.recharts-surface {
+  overflow: visible;
+}

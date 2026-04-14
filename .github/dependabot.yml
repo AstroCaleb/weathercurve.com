@@ -1,0 +1,23 @@
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    groups:
+      dev-dependencies:
+        dependency-type: "development"
+        patterns:
+          - "*"
+      regular-dependencies:
+        dependency-type: "production"
+        patterns:
+          - "*"
+        exclude-patterns:
+          - "react"
+          - "react-dom"
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+    pull-request-branch-name:
+      separator: "-"

@@ -1,0 +1,33 @@
+name: Production Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version/tag to deploy (e.g., v1.0.0) or "latest" for most recent release'
+        required: false
+        default: 'latest'
+
+permissions:
+  contents: read
+  packages: read
+  actions: write
+  deployments: write
+  id-token: write
+
+concurrency:
+  group: production-deploy-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy to Production
+    uses: ./.github/workflows/deploy.yml
+    with:
+      environment: Production
+      version: ${{ github.event.inputs.version || 'latest' }}
+    secrets:
+      GH_PR_CREATE: ${{ secrets.GH_PR_CREATE }}
+      FTP_SERVER: ${{ secrets.FTP_SERVER }}
+      PROD_FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+      PROD_FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}

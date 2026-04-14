@@ -1,0 +1,166 @@
+name: Deploy
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        description: 'Environment to deploy to (Production)'
+        type: string
+        required: true
+      version:
+        description: 'Version/tag to deploy (e.g., v1.0.0) or "latest"'
+        type: string
+        required: false
+        default: 'latest'
+    secrets:
+      GH_PR_CREATE:
+        required: true
+      FTP_SERVER:
+        required: true
+      PROD_FTP_USERNAME:
+        required: false
+      PROD_FTP_PASSWORD:
+        required: false
+
+permissions:
+  contents: read
+  packages: read
+  actions: write
+  deployments: write
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  web-deploy:
+    name: Deploy ${{ inputs.version == 'latest' && 'latest' || inputs.version }} to ${{ inputs.environment }}
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GH_PR_CREATE }}
+      ENVIRONMENT: ${{ inputs.environment }}
+    steps:
+      - name: Set version and tag
+        id: version
+        run: |
+          set -e  # Exit on error
+
+          VERSION="${{ inputs.version || 'latest' }}"
+          echo "Input version: $VERSION"
+
+          if [ "$VERSION" = "latest" ]; then
+            # Get the latest release tag
+            echo "Fetching latest release..."
+            LATEST_TAG=$(gh api repos/${{ github.repository }}/releases/latest --jq '.tag_name')
+            VERSION="$LATEST_TAG"
+            echo "Latest release: $VERSION"
+          else
+            # Clean up version string
+            VERSION=$(echo "$VERSION" | tr -d '[:space:]')
+
+            # Ensure version has 'v' prefix for consistency
+            if [[ ! "$VERSION" =~ ^v ]]; then
+              VERSION="v$VERSION"
+              echo "Normalized version to: $VERSION"
+            fi
+
+            # Verify the release exists
+            if ! gh api repos/${{ github.repository }}/releases/tags/$VERSION --jq .id >/dev/null 2>&1; then
+              echo "::error::Release $VERSION not found"
+              exit 1
+            fi
+          fi
+
+          # Output both with and without 'v' prefix for flexibility
+          echo "version=${VERSION#v}" >> $GITHUB_OUTPUT  # Without 'v' prefix
+          echo "tag=$VERSION" >> $GITHUB_OUTPUT         # With 'v' prefix
+          echo "Using version: $VERSION"
+          echo "::notice::Preparing to deploy version: $VERSION"
+
+      - name: Download release asset
+        id: download-release
+        run: |
+          set -e
+
+          VERSION="${{ inputs.version }}"
+          TAG="${{ steps.version.outputs.tag }}"
+          FILE_NAME="dist-${{ steps.version.outputs.version }}.zip"
+
+          if [ "$VERSION" = "latest" ]; then
+            echo "Downloading latest release asset..."
+            if gh release download --repo "${{ github.repository }}" --pattern "$FILE_NAME" --dir "." --clobber; then
+              echo "Using pre-built assets from latest release"
+              echo "use_prebuilt=true" >> $GITHUB_OUTPUT
+              unzip -o "$FILE_NAME" -d dist-release
+            else
+              echo "No pre-built assets found for latest release, will build from source"
+              echo "use_prebuilt=false" >> $GITHUB_OUTPUT
+            fi
+          else
+            echo "Downloading tagged release asset: $TAG"
+            if gh release download "$TAG" --repo "${{ github.repository }}" --pattern "$FILE_NAME" --dir "." --clobber; then
+              echo "Using pre-built assets from tag $TAG"
+              echo "use_prebuilt=true" >> $GITHUB_OUTPUT
+              unzip -o "$FILE_NAME" -d dist-release
+            else
+              echo "No pre-built assets found for tag $TAG, will build from source"
+              echo "use_prebuilt=false" >> $GITHUB_OUTPUT
+            fi
+          fi
+
+      - name: Checkout code
+        if: steps.download-release.outputs.use_prebuilt != 'true'
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # 4.2.2
+        with:
+          fetch-depth: 0
+          ref: ${{ steps.version.outputs.tag }}
+
+      - name: Set up Node 22
+        if: steps.download-release.outputs.use_prebuilt != 'true'
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # 4.4.0
+        with:
+          node-version: "22.19.0"
+
+      - name: Get latest yarn
+        if: steps.download-release.outputs.use_prebuilt != 'true'
+        run: |
+          corepack enable
+          yarn set version berry
+
+      - name: Install dependencies
+        if: steps.download-release.outputs.use_prebuilt != 'true'
+        run: yarn install --immutable
+
+      - name: Build project (if no pre-built assets)
+        if: steps.download-release.outputs.use_prebuilt != 'true'
+        run: |
+          yarn build
+          # Create the same structure as the release zip for consistency
+          mkdir -p dist-release
+          cp -r dist/* dist-release/
+
+      - name: Verify build
+        run: |
+          if [ -d "dist-release" ]; then
+            echo "Build verified, found dist directory"
+            ls -la dist-release/
+          else
+            echo "::error::Build output not found"
+            exit 1
+          fi
+
+      - name: Show deployment info
+        run: |
+          echo "Deploying version: ${{ steps.version.outputs.version }}"
+          echo "Environment: ${{ inputs.environment }}"
+          echo "Using pre-built: ${{ steps.download-release.outputs.use_prebuilt || 'false' }}"
+
+      - name: Sync files to ${{ inputs.environment }}
+        uses: SamKirkland/FTP-Deploy-Action@8e83cea8672e3fbcbb9fdafff34debf6ae4c5f65 # 4.3.5
+        if: inputs.environment == 'Production'
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.PROD_FTP_USERNAME }}
+          password: ${{ secrets.PROD_FTP_PASSWORD }}
+          server-dir: public_html/
+          local-dir: ./dist-release/
