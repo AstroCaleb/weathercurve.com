@@ -20,6 +20,6 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           args: >
-            -Dsonar.projectKey=SpaceDashboard_space-dashboard
-            -Dsonar.organization=spacedashboard
+            -Dsonar.projectKey=AstroCaleb_weathercurve.com
+            -Dsonar.organization=astrocaleb
           projectBaseDir: .
