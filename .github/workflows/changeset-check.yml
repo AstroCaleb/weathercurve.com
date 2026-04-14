@@ -1,0 +1,33 @@
+name: Changeset Check
+
+permissions:
+  contents: read
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  check-changeset:
+    name: Check for Changeset
+    # Skip if this is a release PR (from release-branch/main branch)
+    if: github.head_ref != 'release-branch/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone Repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # 4.2.2
+        with:
+          fetch-depth: 0
+
+      - name: Check changeset status
+        run: |
+          git fetch origin main:refs/remotes/origin/main
+          NEW_CHANGESETS=$(git diff --name-only origin/main -- '.changeset/*.md')
+
+          if [ -z "$NEW_CHANGESETS" ]; then
+            echo "No changeset(s) found since main. Please add a changeset."
+            exit 1
+          else
+            echo "Changeset file(s) detected:"
+            echo "$NEW_CHANGESETS"
+          fi

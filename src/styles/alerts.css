@@ -1,0 +1,219 @@
+/* Alert banners */
+.alert-banners {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 4px;
+  margin-top: 8px;
+}
+
+.alert-banner {
+  align-items: center;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 12px;
+  border-style: solid;
+  border-width: 1px;
+  cursor: pointer;
+  display: flex;
+  font-family: inherit;
+  font-size: 0.78rem;
+  font-weight: 500;
+  gap: 10px;
+  letter-spacing: 0.4px;
+  padding: 11px 16px;
+  text-align: left;
+  transition: filter 0.2s ease;
+  width: 100%;
+}
+
+.alert-banner:hover {
+  filter: brightness(1.15);
+}
+
+.alert-banner-label {
+  flex: 1;
+}
+
+.alert-banner-chevron {
+  flex-shrink: 0;
+  opacity: 0.6;
+}
+
+/* Warning — dark orange/red */
+.alert-banner--warning {
+  background: rgba(205, 65, 20, 0.18);
+  border-color: rgba(220, 80, 30, 0.45);
+  color: rgba(255, 125, 80, 1);
+}
+
+/* Watch — yellow/gold */
+.alert-banner--watch {
+  background: rgba(185, 148, 0, 0.18);
+  border-color: rgba(210, 172, 20, 0.45);
+  color: rgba(255, 208, 55, 1);
+}
+
+/* Advisory/Statement — bright blue */
+.alert-banner--advisory {
+  background: rgba(20, 138, 255, 0.18);
+  border-color: rgba(30, 158, 255, 0.45);
+  color: rgba(75, 182, 255, 1);
+}
+
+/* Modal overlay */
+@keyframes fadeInOverlay {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUpModal {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.alert-modal-overlay {
+  align-items: flex-end;
+  animation: fadeInOverlay 0.2s ease;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  background: rgba(5, 8, 20, 0.7);
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  left: 0;
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 60;
+}
+
+.alert-modal {
+  animation: slideUpModal 0.25s ease;
+  background: rgba(14, 18, 34, 0.98);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: none;
+  border-radius: 20px 20px 0 0;
+  box-shadow: 0 -16px 48px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  max-height: 80vh;
+  max-width: 600px;
+  width: 100%;
+}
+
+.alert-modal-header {
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  flex-shrink: 0;
+  gap: 12px;
+  justify-content: space-between;
+  padding: 16px 20px;
+}
+
+.alert-modal-title {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.alert-modal-header--warning .alert-modal-title {
+  color: rgba(255, 125, 80, 1);
+}
+
+.alert-modal-header--watch .alert-modal-title {
+  color: rgba(255, 208, 55, 1);
+}
+
+.alert-modal-header--advisory .alert-modal-title {
+  color: rgba(75, 182, 255, 1);
+}
+
+.alert-modal-close {
+  align-items: center;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 50%;
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  display: flex;
+  flex-shrink: 0;
+  height: 28px;
+  justify-content: center;
+  transition: all 0.15s ease;
+  width: 28px;
+}
+
+.alert-modal-close:hover {
+  background: rgba(255, 255, 255, 0.14);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.alert-modal-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow-y: auto;
+  padding: 16px 20px 24px;
+}
+
+.alert-modal-item {
+  border-radius: 12px;
+  border-style: solid;
+  border-width: 1px;
+  padding: 14px 16px;
+}
+
+.alert-modal-item--warning {
+  background: rgba(205, 65, 20, 0.12);
+  border-color: rgba(220, 80, 30, 0.35);
+}
+
+.alert-modal-item--watch {
+  background: rgba(185, 148, 0, 0.12);
+  border-color: rgba(210, 172, 20, 0.35);
+}
+
+.alert-modal-item--advisory {
+  background: rgba(20, 138, 255, 0.12);
+  border-color: rgba(30, 158, 255, 0.35);
+}
+
+.alert-modal-item-title {
+  font-size: 0.88rem;
+  font-weight: 500;
+  line-height: 1.4;
+  margin-bottom: 10px;
+}
+
+.alert-modal-item--warning .alert-modal-item-title {
+  color: rgba(255, 125, 80, 1);
+}
+
+.alert-modal-item--watch .alert-modal-item-title {
+  color: rgba(255, 208, 55, 1);
+}
+
+.alert-modal-item--advisory .alert-modal-item-title {
+  color: rgba(75, 182, 255, 1);
+}
+
+.alert-modal-item-desc {
+  font-size: 0.82rem;
+  font-weight: 300;
+  line-height: 1.65;
+  opacity: 0.82;
+  white-space: pre-wrap;
+}

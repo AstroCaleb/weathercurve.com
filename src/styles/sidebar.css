@@ -1,0 +1,154 @@
+/* Sidebar */
+.sidebar {
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  background: rgba(15, 18, 35, 0.85);
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  box-sizing: border-box;
+  height: 100%;
+  left: -450px;
+  max-width: 450px;
+  padding: 80px 20px 20px;
+  position: fixed;
+  top: 0;
+  transition: 0.35s ease all;
+  width: 100%;
+  z-index: 10;
+}
+
+.sidebar.open {
+  left: 0;
+}
+
+.time-format {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  right: 20px;
+}
+
+/* Lookup form */
+#location-lookup-form {
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
+  margin: 0;
+  position: relative;
+}
+
+#location-lookup-form input {
+  font-size: 16px; /* Must be ≥16px to prevent iOS auto-zoom on focus */
+}
+
+#location-lookup-form .add-location-btn {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  color: #fff;
+  font-weight: 400;
+  padding: 0 20px;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+#location-lookup-form .add-location-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+#location-lookup-form.loading .input-spinner-wrapper {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Saved locations */
+.locations-wrapper {
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-sizing: border-box;
+  margin: 20px 0;
+  overflow: hidden;
+  width: 100%;
+}
+
+.location-item-wrapper {
+  align-items: stretch;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  display: flex;
+  min-height: 48px;
+  width: 100%;
+}
+
+.location-item-wrapper:last-child {
+  border-bottom-width: 0;
+}
+
+.locations-wrapper .location-item {
+  align-items: center;
+  background: transparent;
+  border: none;
+  box-sizing: border-box;
+  color: rgba(255, 255, 255, 0.8);
+  display: flex;
+  font-size: 0.9rem;
+  font-weight: 300;
+  gap: 10px;
+  padding: 10px 14px;
+  text-align: left;
+  transition: all 0.15s ease;
+  width: calc(100% - 40px);
+}
+
+.locations-wrapper .location-item.current-location {
+  width: 100%;
+}
+
+.locations-wrapper .location-item .check-icon {
+  flex-shrink: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 3px;
+}
+
+.locations-wrapper .location-item .nav-icon {
+  flex-shrink: 0;
+  margin-left: auto;
+  opacity: 0.4;
+}
+
+.locations-wrapper .location-item.active {
+  color: #fff;
+}
+
+.locations-wrapper .location-item.active .check-icon {
+  background: rgba(255, 255, 255, 0.85);
+  color: #0a0e1a;
+  border-color: transparent;
+}
+
+.locations-wrapper .remove-item {
+  align-items: center;
+  background: transparent;
+  border-left: 1px solid rgba(255, 255, 255, 0.06);
+  border: none;
+  color: rgba(255, 255, 255, 0.4);
+  display: flex;
+  justify-content: center;
+  transition: all 0.15s ease;
+  width: 40px;
+}
+
+.location-item-wrapper:hover .location-item:not(.active) {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.location-item-wrapper:hover .remove-item {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.location-item-wrapper .remove-item:hover {
+  background: rgba(200, 50, 50, 0.4);
+  color: #fff;
+}
