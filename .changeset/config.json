@@ -3,7 +3,7 @@
   "changelog": [
     "@changesets/changelog-github",
     {
-      "repo": "AstroCaleb/weather-curve"
+      "repo": "AstroCaleb/weathercurve.com"
     }
   ],
   "commit": false,
