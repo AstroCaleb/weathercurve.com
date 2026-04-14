@@ -35,4 +35,4 @@ To contribute:
 
 ## License
 
-[Weather Curve](https://weathercurve.com) &copy; 2026 by [Caleb Dudley](https://calebdudleydesign.com) is licensed under the [MIT License](LICENSE).
+[Weather Curve](https://weathercurve.com) &copy; 2021-2026 by [Caleb Dudley](https://calebdudleydesign.com) is licensed under the [MIT License](LICENSE).
