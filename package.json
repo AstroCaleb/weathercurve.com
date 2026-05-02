@@ -22,14 +22,14 @@
     "prepare": "husky"
   },
   "dependencies": {
-    "@floating-ui/react": "^0.27.18",
-    "@sentry/react": "^10.47.0",
-    "@sentry/vite-plugin": "^5.1.1",
-    "@tanstack/react-query": "^5.90.12",
-    "axios": "^1.13.2",
+    "@floating-ui/react": "^0.27.19",
+    "@sentry/react": "^10.51.0",
+    "@sentry/vite-plugin": "^5.2.1",
+    "@tanstack/react-query": "^5.100.7",
+    "axios": "^1.15.2",
     "date-fns": "^4.1.0",
     "date-fns-tz": "^3.2.0",
-    "lucide-react": "^0.474.0",
+    "lucide-react": "^0.577.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "recharts": "^2.15.3"
