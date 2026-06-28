@@ -52,10 +52,8 @@ jobs:
         with:
           node-version: "22.19.0"
 
-      - name: Get latest yarn
-        run: |
-          corepack enable
-          yarn set version berry
+      - name: Enable Corepack
+        run: corepack enable
 
       - name: Install dependencies
         run: yarn install --immutable

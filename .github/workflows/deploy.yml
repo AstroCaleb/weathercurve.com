@@ -121,11 +121,9 @@ jobs:
         with:
           node-version: "22.19.0"
 
-      - name: Get latest yarn
+      - name: Enable Corepack
         if: steps.download-release.outputs.use_prebuilt != 'true'
-        run: |
-          corepack enable
-          yarn set version berry
+        run: corepack enable
 
       - name: Install dependencies
         if: steps.download-release.outputs.use_prebuilt != 'true'
