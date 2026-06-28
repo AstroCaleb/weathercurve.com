@@ -19,7 +19,7 @@ import WeatherIcon from './WeatherIcon';
 import ToggleSwitch from './ToggleSwitch';
 import MinutelyChart from './MinutelyChart';
 import { formatTemperature } from '../utils/temperature';
-import { formatTime, formatDate } from '../utils/time';
+import { formatTime, formatDate, getDateKey } from '../utils/time';
 import type {
   WeatherData,
   HourlyDataPoint,
@@ -294,13 +294,11 @@ function findDayWeather(
   const hourlyPoint: HourlyDataPoint = weather.hourly.data[hourIndex];
   if (!hourlyPoint) return weather.daily.data[0];
 
-  const hourTime = hourlyPoint.time;
-  const dayStart = hourTime - (hourTime % 86400);
+  const hourKey = getDateKey(hourlyPoint.time, weather.timezone);
 
   return (
-    weather.daily.data.find((day) => {
-      const diff = Math.abs(day.time - dayStart);
-      return diff < 86400;
-    }) ?? weather.daily.data[0]
+    weather.daily.data.find(
+      (day) => getDateKey(day.time, weather.timezone) === hourKey,
+    ) ?? weather.daily.data[0]
   );
 }

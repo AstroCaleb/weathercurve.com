@@ -38,6 +38,12 @@ export function formatShortDate(unixTime: number, timezone?: string): string {
   return format(zonedDate, 'EEE, d');
 }
 
+export function getDateKey(unixTime: number, timezone?: string): string {
+  const date = fromUnixTime(unixTime);
+  const zonedDate = timezone ? toZonedTime(date, timezone) : date;
+  return format(zonedDate, 'yyyy-MM-dd');
+}
+
 export function getHourNumber(unixTime: number, timezone?: string): number {
   const date = fromUnixTime(unixTime);
   const zonedDate = timezone ? toZonedTime(date, timezone) : date;
