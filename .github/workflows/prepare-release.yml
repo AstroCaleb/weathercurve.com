@@ -86,7 +86,7 @@ jobs:
           script: |
             const { data: pullRequests } = await github.rest.pulls.list({
               owner: 'AstroCaleb',
-              repo: 'weather-curve',
+              repo: 'weathercurve.com',
               state: 'open',
               head: `AstroCaleb:release-branch/main`
             });
@@ -102,13 +102,13 @@ jobs:
             for (const prNumber of prNumbers) {
               await github.rest.issues.createComment({
                 owner: 'AstroCaleb',
-                repo: 'weather-curve',
+                repo: 'weathercurve.com',
                 issue_number: prNumber,
                 body: 'Closing in favor of a new release PR with the latest changes.'
               });
               await github.rest.pulls.update({
                 owner: 'AstroCaleb',
-                repo: 'weather-curve',
+                repo: 'weathercurve.com',
                 pull_number: prNumber,
                 state: 'closed'
               });
